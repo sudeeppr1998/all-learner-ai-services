@@ -1999,14 +1999,17 @@ export class ScoresController {
       currentLevel = recordData[0]?.milestone_level || "m0";
       let totalTargets = getGetTarget.length;
 
-      let getGetTargetCharArr = getGetTarget.filter((getGetTargetEle, index) => {
-        if (gettargetlimit > 0 && index >= gettargetlimit) {
-          return false;
-        }
-        return true;
-      }).map(charData => {
-        return charData.character
-      });
+      let getGetTargetCharArr =
+        getGetTarget
+          // .filter((getGetTargetEle, index) => {
+          //   if (gettargetlimit > 0 && index >= gettargetlimit) {
+          //     return false;
+          //   }
+          //   return true;
+          // })
+          .map(charData => {
+            return charData.character
+          });
 
       let contentLevel = '';
       let complexityLevel = [];
@@ -2063,6 +2066,7 @@ export class ScoresController {
         "cLevel": contentLevel,
         "complexityLevel": complexityLevel,
         "graphemesMappedObj": graphemesMappedObj,
+        "gettargetlimit": gettargetlimit || 5
       };
 
       const newContent = await lastValueFrom(
@@ -2136,14 +2140,16 @@ export class ScoresController {
       let getGetTarget = await this.scoresService.getTargetsByUser(id, language);
       let validations = await this.scoresService.getAssessmentRecordsUserid(id);
       let tokenHexcodeData = await this.scoresService.gethexcodeMapping(language);
-      let getGetTargetCharArr = getGetTarget.filter((getGetTargetEle, index) => {
-        if (gettargetlimit > 0 && index >= gettargetlimit) {
-          return false;
-        }
-        return true;
-      }).map(charData => {
-        return charData.character
-      });
+      let getGetTargetCharArr = getGetTarget
+        // .filter((getGetTargetEle, index) => {
+        // if (gettargetlimit > 0 && index >= gettargetlimit) {
+        //   return false;
+        // }
+        // return true;
+        // })
+        .map(charData => {
+          return charData.character
+        });
 
       let totalTargets = getGetTarget.length;
       let totalValidation = validations.length;
@@ -2203,7 +2209,8 @@ export class ScoresController {
         "tags": tags,
         "cLevel": contentLevel,
         "complexityLevel": complexityLevel,
-        "graphemesMappedObj": graphemesMappedObj
+        "graphemesMappedObj": graphemesMappedObj,
+        "gettargetlimit": gettargetlimit || 5
       };
 
       const newContent = await lastValueFrom(
@@ -2279,14 +2286,16 @@ export class ScoresController {
       let getGetTarget = await this.scoresService.getTargetsByUser(id, language);
       let tokenHexcodeData = await this.scoresService.gethexcodeMapping(language);
 
-      let getGetTargetCharArr = getGetTarget.filter((getGetTargetEle, index) => {
-        if (gettargetlimit > 0 && index >= gettargetlimit) {
-          return false;
-        }
-        return true;
-      }).map(charData => {
-        return charData.character
-      });
+      let getGetTargetCharArr = getGetTarget
+        // .filter((getGetTargetEle, index) => {
+        // if (gettargetlimit > 0 && index >= gettargetlimit) {
+        //   return false;
+        // }
+        // return true;
+        // })
+        .map(charData => {
+          return charData.character
+        });
 
       let totalTargets = getGetTarget.length;
 
@@ -2343,7 +2352,8 @@ export class ScoresController {
         "tags": tags,
         "cLevel": contentLevel,
         "complexityLevel": complexityLevel,
-        "graphemesMappedObj": graphemesMappedObj
+        "graphemesMappedObj": graphemesMappedObj,
+        "gettargetlimit": gettargetlimit || 5
       };
 
       const newContent = await lastValueFrom(

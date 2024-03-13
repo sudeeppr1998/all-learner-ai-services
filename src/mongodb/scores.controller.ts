@@ -2523,6 +2523,16 @@ export class ScoresController {
           milestone_level: previous_level,
           sub_milestone_level: "",
         });
+      } else if (getSetResult.collectionId === "0d00c89d-5c73-4de1-9153-c300c972ad64" || getSetResult.collectionId === "f10b7f82-8a1a-4448-b319-6eea17acff26" ||
+        getSetResult.collectionId === "9e77a188-6785-4e56-b2d0-bfac97bcc6a2" || getSetResult.collectionId === "7765ff21-e07a-4a68-9b42-18751f504ef0" && getSetResult.language === "hi") {
+        previous_level = 'm0';
+        let addMilestoneResult = await this.scoresService.createMilestoneRecord({
+          user_id: getSetResult.user_id,
+          session_id: getSetResult.session_id,
+          sub_session_id: getSetResult.sub_session_id,
+          milestone_level: previous_level,
+          sub_milestone_level: "",
+        });
       } else {
         if (getSetResult.language === "ta" && getSetResult.collectionId !== "" && getSetResult.collectionId !== undefined) {
           if (getSetResult.collectionId === "bd20fee5-31c3-48d9-ab6f-842eeebf17ff" || getSetResult.collectionId === "61bc9579-0f9b-47ae-b446-7cdd525ce413" ||
@@ -2606,6 +2616,34 @@ export class ScoresController {
           } else if (getSetResult.collectionId === "5b69052e-f609-4004-adce-cf0fcfdac98b" || getSetResult.collectionId === "30c5800e-4a02-4259-8328-abf57e4255ca" ||
             getSetResult.collectionId === "b2eb8d4a-5d2b-441a-8269-0151e089c253" ||
             getSetResult.collectionId === "b12b79ec-f7cb-44b4-99c9-5ea747d4f99a") {
+            milestone_level = "m1";
+          }
+        } else if (getSetResult.language === "hi" && getSetResult.collectionId !== "" && getSetResult.collectionId !== undefined) {
+          if (getSetResult.collectionId === "6f64d4a2-b6e5-4a2b-91e5-f6be9f2d4d8b" || getSetResult.collectionId === "00644696-a8b6-48fc-b73f-25a0da567a14" ||
+            getSetResult.collectionId === "2a1a6894-d953-4a26-a294-a7f66469b209" ||
+            getSetResult.collectionId === "e0bdd73c-dd8b-4c2b-92cf-be753fd32c46") {
+            if (sessionResult === "pass") {
+              milestone_level = "m2";
+            }
+            else {
+              milestone_level = "m1";
+            }
+          } else if (getSetResult.collectionId === "ab289254-45b1-40ed-9b84-3e414577120f" || getSetResult.collectionId === "98a53df5-c4e3-4045-870d-1154f1e5023a" ||
+            getSetResult.collectionId === "8c438757-e35b-4beb-ae5f-015a9ed3f7f6" ||
+            getSetResult.collectionId === "a8492aad-b904-406a-bae1-e3f6ebda48ca") {
+            if (sessionResult === "fail") {
+              milestone_level = "m3";
+            }
+            else {
+              milestoneEntry = false;
+            }
+          } else if (getSetResult.collectionId === "ee548dec-f599-47a4-8767-bddadb20ed70" || getSetResult.collectionId === "a1cd9d37-2fe1-429f-8830-dde473b9e87f" ||
+            getSetResult.collectionId === "1da05e37-8ddc-4a5e-b059-abaa3ef45198" ||
+            getSetResult.collectionId === "62fca34f-12da-4017-83f5-ae88bf99c48d") {
+            milestone_level = "m4";
+          } else if (getSetResult.collectionId === "919aba0b-7443-4d6c-a1dc-e7b42a803496" || getSetResult.collectionId === "d95a1672-70d3-437f-92da-9013a4e5e593" ||
+            getSetResult.collectionId === "dfe36bd6-91d5-436e-b283-0dc3704f19f5" ||
+            getSetResult.collectionId === "e0021945-8948-4467-a256-13b5bfbbe6af") {
             milestone_level = "m1";
           }
         }

@@ -6,6 +6,8 @@ import { assessmentInputSchema, assessmentInputDocument } from './schemas/assess
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import axios from 'axios';
+import { Readable } from 'stream';
+import { spawn } from 'child_process';
 
 @Injectable()
 export class ScoresService {
@@ -1250,5 +1252,97 @@ export class ScoresService {
     }).filter((sessionIdEle) => sessionIdEle != undefined)
 
     return sessionIds;
+  }
+
+  async denoiserService(base64Data: any): Promise<any> {
+    try {
+
+      // Convert base64 string to buffer
+      const buffer = Buffer.from(base64Data, 'base64');
+
+      // Create a readable stream from the buffer
+      const inputStream = new Readable();
+      inputStream.push(buffer);
+      inputStream.push(null); // Indicates the end of the stream
+
+      //var base64String;
+
+      // Spawn ffmpeg process
+      const ffmpegProcess = spawn('ffmpeg', [
+        '-i', 'pipe:0', // Input from stdin
+        '-f', 'wav', // Specify input format
+        '-filter_complex', 'highpass=f=300,asendcmd=0.3 afftdn sn start,asendcmd=0.8 afftdn sn stop,afftdn=nf=-20,dialoguenhance,lowpass=f=1000', // Audio filters
+        '-f', 'wav', // Specify output format
+        'pipe:1', // Output to stdout
+      ]);
+
+      // Pipe input stream to ffmpeg stdin
+      inputStream.pipe(ffmpegProcess.stdin);
+
+      return new Promise<string>((resolve, reject) => {
+        let base64Output = '';
+        // Capture ffmpeg stdout
+        ffmpegProcess.stdout.on('data', (data) => {
+          base64Output += data.toString('base64');
+        });
+
+        // Handle ffmpeg process end
+        ffmpegProcess.on('close', (code) => {
+          if (code === 0) {
+            resolve(base64Output);
+          } else {
+            reject(new Error(`FFmpeg process exited with code ${code}`));
+          }
+        });
+
+        // Handle errors
+        ffmpegProcess.on('error', (err) => {
+          reject(err);
+        });
+      });
+
+      // Create a pass-through stream to capture ffmpeg output
+      // const outputBuffers = [];
+      // const writableStream = new PassThrough();
+      // writableStream.on('data', (chunk) => outputBuffers.push(chunk));
+
+      // // Build the ffmpeg command
+      // await FfmpegCommand()
+      //   .input(inputStream)
+      //   .inputFormat('wav') // Specify input format explicitly if necessary
+      //   .audioFilters([
+      //     'highpass=f=300',
+      //     'asendcmd=0.3 afftdn sn start',
+      //     'asendcmd=0.8 afftdn sn stop',
+      //     'afftdn=nf=-20',
+      //     'dialoguenhance',
+      //     'lowpass=f=1000'
+      //   ])
+      //   .toFormat('wav') // Ensure output format is WAV
+      //   .pipe(writableStream) // Pipe the output to the pass-through stream
+      //   .on('end', () => {
+      //     console.log('Processing finished successfully');
+
+      //     writableStream.on('end', () => {
+      //       const convertedBuffer = Buffer.concat(outputBuffers);
+      //       const base64String = base64js.fromByteArray(convertedBuffer);
+      //       //console.log(base64String);
+      //       console.log("hello");
+      //       return base64String;
+      //     });
+
+      //     // Convert the captured output to base64
+      //     // const base64Output = Buffer.concat(writableStream.read()).toString('base64');
+      //     // console.log('Base64 output:', base64Output);
+
+      //   })
+      //   .on('error', (err) => {
+      //     console.error('Error during processing:', err);
+      //   })
+      // .run();
+
+    } catch (err) {
+      return err;
+    }
   }
 }

@@ -2821,4 +2821,31 @@ export class ScoresController {
   GetSessionIdsByUser(@Param('userId') id: string, @Query() { limit = 5 }) {
     return this.scoresService.getAllSessions(id, limit);
   }
+
+  @Post('/audioDenoiserTest')
+  async audioDenoiserTest(@Res() response: FastifyReply, @Body() audioFile: any) {
+    try {
+      const audioFileBase64 = audioFile.audio.toString('base64');
+
+      let originalAudioOutput = await this.scoresService.audioFileToAsrOutput(audioFileBase64, audioFile.language);
+
+      let denoiserAudioOutput = await this.scoresService.denoiserService(audioFileBase64);
+
+      let denoiserServiceOutput = await this.scoresService.audioFileToAsrOutput(denoiserAudioOutput, audioFile.language);
+
+      return response.status(HttpStatus.CREATED).send(
+        {
+          status: 'success',
+          originalAudioOutput: originalAudioOutput,
+          denoiserServiceOutput: denoiserServiceOutput,
+          original_text: audioFile.original_text
+        }
+      )
+    } catch (err) {
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+        status: "error",
+        message: "Server error - " + err
+      });
+    }
+  }
 }

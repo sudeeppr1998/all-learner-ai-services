@@ -9,9 +9,8 @@ import { Score } from './entities/score.entity';
 export class ScoresService {
   constructor(
     @InjectRepository(Score)
-    private readonly ScoreRepository: Repository<Score>
-  ) { }
-
+    private readonly ScoreRepository: Repository<Score>,
+  ) {}
 
   async create(ScoreDto: CreateScoreDto): Promise<Score> {
     const Score = this.ScoreRepository.create(ScoreDto);
@@ -38,7 +37,7 @@ export class ScoresService {
   }
 
   update(id: number, updateScoreDto: UpdateScoreDto) {
-    return `This action updates a #${id} score`;
+    return `This action updates a #${id} score ${updateScoreDto}`;
   }
 
   remove(id: number) {

@@ -2698,30 +2698,18 @@ export class ScoresController {
       let milestoneEntry = true;
       let targets = await this.scoresService.getTargetsBysubSession(getSetResult.sub_session_id, getSetResult.contentType, getSetResult.language);
       let fluency = await this.scoresService.getFluencyBysubSession(getSetResult.sub_session_id, getSetResult.language);
+      let familiarity = await this.scoresService.getFamiliarityBysubSession(getSetResult.sub_session_id, getSetResult.contentType, getSetResult.language);
 
       let totalTargets = targets.length;
-      let totalSyllables = getSetResult.totalSyllableCount
-      let targetsPercentage = Math.min(Math.floor((totalTargets / totalSyllables) * 100));
+      let totalFamiliarity = familiarity.length;
+      let totalSyllables = totalTargets + totalFamiliarity;
+      let targetsPercentage = Math.floor((totalTargets / totalSyllables) * 100);
       let passingPercentage = Math.floor(100 - targetsPercentage);
 
       let sessionResult = 'No Result';
 
       let recordData: any = await this.scoresService.getlatestmilestone(getSetResult.user_id, getSetResult.language);
       let previous_level = recordData[0]?.milestone_level || undefined;
-
-      if (totalSyllables <= 100) {
-        targetPerThreshold = 30;
-      } else if (totalSyllables > 100 && totalSyllables <= 150) {
-        targetPerThreshold = 25
-      } else if (totalSyllables > 150 && totalSyllables <= 175) {
-        targetPerThreshold = 20
-      } else if (totalSyllables > 175 && totalSyllables <= 250) {
-        targetPerThreshold = 15;
-      } else if (totalSyllables > 250 && totalSyllables <= 500) {
-        targetPerThreshold = 10;
-      } else if (totalSyllables > 500) {
-        targetPerThreshold = 5;
-      }
 
       if (targetsPercentage <= targetPerThreshold) {
         if (getSetResult.contentType.toLowerCase() === 'word') {
@@ -2898,6 +2886,8 @@ export class ScoresController {
           previous_level: previous_level,
           targets: targets,
           targetsCount: totalTargets,
+          familiarity: familiarity,
+          familiarityCount: totalFamiliarity,
           totalSyllables: totalSyllables,
           fluency: fluency,
           percentage: passingPercentage || 0,
